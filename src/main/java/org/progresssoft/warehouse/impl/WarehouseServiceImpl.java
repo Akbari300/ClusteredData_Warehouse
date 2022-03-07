@@ -4,14 +4,16 @@ import org.progresssoft.util.RevisionDto;
 import org.progresssoft.warehouse.Warehouse;
 import org.progresssoft.warehouse.WareRepository;
 import org.progresssoft.warehouse.WarehouseService;
+import org.progresssoft.warehouse.dto.WarehouseDto;
+import org.progresssoft.warehouse.dto.WarehouseDtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
@@ -24,85 +26,94 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Autowired
     private WareRepository repository;
 
-    // retrieve all cars
+    // retrieve all deals
     @Override
     public List<Warehouse> findAll() {
         return repository.findAll();
     }
 
-    // retrieve car by id
+    // retrieve deal by id
     @Override
     public Warehouse findById(Long id) {
-        // Optional<Warehouse> car = repository.findById(id);
-        // if (car.isPresent())
-        //     return car.get();
+        Optional<Warehouse> warehouse = repository.findById(id);
+        if (warehouse.isPresent())
+            return warehouse.get();
         return null;
     }
 
-    // create new car
+    // create new deal
     @Override
-    public Warehouse create(Warehouse car) {
-        // if (car != null) {
-        //     return repository.save(car);
-        // }
-        return null;
+    public Object create(WarehouseDto dto) {
+        try{
+            Warehouse warehouse = WarehouseDtoMapper.mapWarehouseDto(new Warehouse(), dto);
+             if (warehouse != null) {
+                 return repository.save(warehouse);
+            }
+            return null;
+        }catch(Exception e){
+            return e.getMessage();
+        }   
+        
     }
 
-    // update an existing car info
+
+    // create multiple deals
     @Override
-    public Warehouse update(Long id, Warehouse dto) {
-        // Warehouse car = this.findById(id);
-        // if (car != null) {
-        //     return repository.save(this.carMapper(car, dto));
-        // }
-        return null;
+    public Boolean createAll(WarehouseDto [] dtos) {
+        try{
+            for (WarehouseDto dto : dtos) {
+                Warehouse warehouse = WarehouseDtoMapper.mapWarehouseDto(new Warehouse(), dto);
+                if (warehouse != null) {
+                    repository.save(warehouse);
+                 }
+            }
+
+            return true;
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+        
     }
 
-    // retrieve RGB color and color name by id
+    // update an existing deal info
     @Override
-    public Map<String, Object> getColorRGB(Long id) {
-        // Warehouse car = this.findById(id);
-        // if (car != null) {
-        //     Map<String, Object> color = new HashMap<>();
-        //     color.put("ColorName", car.getColorName());
-        //     color.put("colorCode", car.getColorCode());
-        //     return color;
-        // }
+    public Warehouse update(Long id, WarehouseDto dto) {
+        Optional<Warehouse> pOptional = repository.findById(id);
+        if (pOptional.isPresent()) {
+            Warehouse warehouse = WarehouseDtoMapper.mapWarehouseDto(pOptional.get(), dto);
+            if (!warehouse.equals(null)) {
+                return repository.save(warehouse);
+            }
+        }
 
         return null;
     }
 
-    // Soft Delete a car
+    // Soft Delete a deal 
     @Override
     public Boolean delete(Long id) {
-        // Warehouse car = this.findById(id);
-        // if (car != null) {
-        //     car.setDeleted(true);
-        //     repository.save(car);
-        //     return true;
-        // }
+        Optional<Warehouse> objOptional = repository.findById(id);
+
+        if (objOptional.isPresent()) {
+            Warehouse warehouse = objOptional.get();
+            warehouse.setDeleted(true);
+            warehouse.setDeletedAt(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+            repository.save(warehouse);
+            return true;
+        }
         return false;
     }
 
-    // utility method for carMapping objects
-    private Warehouse carMapper(Warehouse car, Warehouse dto) {
-        // car.setType(dto.getType() == null ? null : dto.getType());
-        // car.setColorCode(dto.getColorCode() == null ? null : dto.getColorCode());
-        // car.setColorName(dto.getColorName() == null ? null : dto.getColorName());
-        // car.setPrice(dto.getPrice() == null ? null : dto.getPrice());
-        // car.setType(dto.getType() == null ? null : dto.getType());
-        // car.setYearOfConstruction(dto.getYearOfConstruction() == null ? null : dto.getYearOfConstruction());
-        return car;
-    }
 
-    // car audit logs
+    // deal audit logs
     @Override
-    public List<RevisionDto> getCarAudits(Long id) {
+    public List<RevisionDto> getWareHouseAudits(Long id) {
         Revisions<Integer, Warehouse> indList = repository.findRevisions(id);
-        List<Revision<Integer, Warehouse>> cars = indList.getContent();
+        List<Revision<Integer, Warehouse>> warehouses = indList.getContent();
 
         List<RevisionDto> dtos = new ArrayList<>();
-        for (Revision revision : cars) {
+        for (Revision revision : warehouses) {
             dtos.add(new RevisionDto(revision.getEntity()));
         }
 

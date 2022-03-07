@@ -44,4 +44,8 @@ public class BaseEntity {
 
     @Column(columnDefinition = "boolean default false")
     private Boolean deleted = false;
+
+    @Column(name = "deleted_at")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "UTC")
+    private LocalDateTime deletedAt;
 }

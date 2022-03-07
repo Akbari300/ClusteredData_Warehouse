@@ -1,6 +1,7 @@
 package org.progresssoft.warehouse;
 
 import org.progresssoft.util.RevisionDto;
+import org.progresssoft.warehouse.dto.WarehouseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,7 +21,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -28,70 +28,61 @@ import javax.servlet.http.HttpServletRequest;
  * @author Akbari300
  */
 @RestController
-@RequestMapping(path = "/api/car", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/v1/warehouse", produces = MediaType.APPLICATION_JSON_VALUE)
 public class WarehousController {
     @Autowired
-    private WarehouseService carService;
+    private WarehouseService warehouseService;
 
-    @Operation(summary = "Get all cars")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrieve all cars", content = {
+    @Operation(summary = "Get all deals")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrieve all deals", content = {
             @Content(schema = @Schema(implementation = Warehouse.class)) }) })
     @GetMapping
     public List<Warehouse> findAll() {
-        return carService.findAll();
+        return warehouseService.findAll();
     }
 
-    @Operation(summary = "Get an Car by its ID")
+    @Operation(summary = "Get a deal by ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found the Car", content = {
+            @ApiResponse(responseCode = "200", description = "Found the deal in warehouse", content = {
                     @Content(schema = @Schema(implementation = Warehouse.class)) }),
-            @ApiResponse(responseCode = "404", description = "Car not found", content = @Content) })
+            @ApiResponse(responseCode = "404", description = "deal not found", content = @Content) })
     @GetMapping(path = { "/{id}" }, produces = MediaType.APPLICATION_JSON_VALUE)
     public Warehouse findById(@PathVariable(name = "id", required = true) Long id) {
-        return carService.findById(id);
+        return warehouseService.findById(id);
     }
 
-    @Operation(summary = "add a new car to the carpool, provide {deleted=false} ")
-    @ApiResponse(responseCode = "200", description = "Car is added to the pool", content = {
-            @Content(schema = @Schema(implementation = Warehouse.class)) })
+    @Operation(summary = "add a new deal to the warehouse")
+    @ApiResponse(responseCode = "200", description = "Deal is added to the warehouse", content = {
+            @Content(schema = @Schema(implementation = WarehouseDto.class)) })
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody ResponseEntity<Warehouse> create(@RequestBody Warehouse body, HttpServletRequest request)
+    public @ResponseBody ResponseEntity<Object> create(@RequestBody WarehouseDto body, HttpServletRequest request)
             throws Exception {
-        return ResponseEntity.status(HttpStatus.CREATED).body(carService.create(body));
+        return ResponseEntity.status(HttpStatus.CREATED).body(warehouseService.create(body));
     }
 
-    @Operation(summary = "Update a car by id, provide {deleted=false}")
+    @Operation(summary = "Update a deal by id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Car was updated", content = {
-                    @Content(schema = @Schema(implementation = Warehouse.class)) }),
-            @ApiResponse(responseCode = "404", description = "Car not found", content = @Content) })
+            @ApiResponse(responseCode = "200", description = "Deal is updated", content = {
+                    @Content(schema = @Schema(implementation = WarehouseDto.class)) }),
+            @ApiResponse(responseCode = "404", description = "Deal not found", content = @Content) })
     @PutMapping(path = "/updates/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<Warehouse> update(@PathVariable(name = "id", required = true) Long id,
-            @RequestBody Warehouse car, HttpServletRequest request) throws Exception {
-        return ResponseEntity.ok(carService.update(id, car));
+            @RequestBody WarehouseDto car, HttpServletRequest request) throws Exception {
+        return ResponseEntity.ok(warehouseService.update(id, car));
     }
 
-    @Operation(summary = "Get RGBColor by id")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "retrieved RGB Color", content = {
-            @Content(schema = @Schema(implementation = Warehouse.class)) }) })
-    @GetMapping(path = "/color/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody ResponseEntity<Map<String, Object>> getRGBColor(
-            @PathVariable(name = "id", required = true) Long id) {
-        return ResponseEntity.ok(carService.getColorRGB(id));
-    }
-
-    @Operation(summary = "delete a car by id")
+    @Operation(summary = "delete a Deal by id")
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable(name = "id", required = true) Long id) {
-        return ResponseEntity.ok(carService.delete(id));
+        return ResponseEntity.ok(warehouseService.delete(id));
     }
 
-    @Operation(summary = "Retrive car audit logs by id")
-    @ApiResponse(responseCode = "200", description = "car found", content = {
+    @Operation(summary = "Retrive Deal audit logs by id")
+    @ApiResponse(responseCode = "200", description = "Deal found", content = {
             @Content(schema = @Schema(implementation = RevisionDto.class)) })
     @GetMapping(path = "/audits/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<RevisionDto>> getAccountAudits(@PathVariable(name = "id", required = true) Long id) {
-        return ResponseEntity.ok(carService.getCarAudits(id));
+    public ResponseEntity<List<RevisionDto>> getDealsAudits(@PathVariable(name = "id", required = true) Long id) {
+        return ResponseEntity.ok(warehouseService.getWareHouseAudits(id));
 
     }
 

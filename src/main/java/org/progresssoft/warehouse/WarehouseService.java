@@ -4,19 +4,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.progresssoft.util.RevisionDto;
+import org.progresssoft.warehouse.dto.WarehouseDto;
 
 public interface WarehouseService {
     public List<Warehouse> findAll();
 
     public Warehouse findById(Long id);
 
-    public Warehouse create(Warehouse dto);
+    public Object create(WarehouseDto dto);
+
+    public Boolean createAll(WarehouseDto [] dto);
 
     public Boolean delete(Long id);
 
-    public Warehouse update(Long id, Warehouse car);
+    public Warehouse update(Long id, WarehouseDto car);
 
-    public Map<String, Object> getColorRGB(Long id);
-
-    public List<RevisionDto> getCarAudits(Long id);
+    public List<RevisionDto> getWareHouseAudits(Long id);
 }

@@ -11,6 +11,7 @@ public class WarehouseDtoMapper {
 
         try{
             warehouse.setActive(true);
+            warehouse.setDeleted(false);
             warehouse.setAmount(dto.getAmount() != null? dto.getAmount() : null);
             warehouse.setDealId(dto.getDealId() != null? dto.getDealId() : null);
             warehouse.setOrderCurrencyCode(dto.getOrderCurrencyCode() != null? dto.getOrderCurrencyCode() : null);
