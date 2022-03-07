@@ -1,5 +1,7 @@
 package org.progresssoft.warehouse;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,7 +43,7 @@ public class Warehouse extends BaseEntity {
 
 
     @Column(name = "amount", nullable = false)
-    private double amount;
+    private BigDecimal amount;
 
     @Column(name = "order_currency_code", nullable = false, length = 3)
     private String orderCurrencyCode;
