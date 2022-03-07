@@ -3,7 +3,7 @@ package org.progresssoft.warehouse.impl;
 import org.hibernate.exception.ConstraintViolationException;
 import org.progresssoft.util.RevisionDto;
 import org.progresssoft.warehouse.Warehouse;
-import org.progresssoft.warehouse.WareRepository;
+import org.progresssoft.warehouse.WarhouseRepository;
 import org.progresssoft.warehouse.WarehouseService;
 import org.progresssoft.warehouse.dto.WarehouseDto;
 import org.progresssoft.warehouse.dto.WarehouseDtoMapper;
@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class WarehouseServiceImpl implements WarehouseService {
     @Autowired
-    private WareRepository repository;
+    private WarhouseRepository repository;
 
     // retrieve all deals
     @Override

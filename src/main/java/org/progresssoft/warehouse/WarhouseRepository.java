@@ -7,5 +7,5 @@ import org.springframework.data.repository.history.RevisionRepository;
  *
  * @author Akbari300
  */
-public interface WareRepository extends JpaRepository<Warehouse, Long>, RevisionRepository<Warehouse, Long, Integer> {
+public interface WarhouseRepository extends JpaRepository<Warehouse, Long>, RevisionRepository<Warehouse, Long, Integer> {
 }
