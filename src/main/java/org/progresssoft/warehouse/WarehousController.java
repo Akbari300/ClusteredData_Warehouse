@@ -1,6 +1,6 @@
-package org.carpool.car_mng;
+package org.progresssoft.warehouse;
 
-import org.carpool.util.RevisionDto;
+import org.progresssoft.util.RevisionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,33 +29,33 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping(path = "/api/car", produces = MediaType.APPLICATION_JSON_VALUE)
-public class CarController {
+public class WarehousController {
     @Autowired
-    private CarService carService;
+    private WarehouseService carService;
 
     @Operation(summary = "Get all cars")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrieve all cars", content = {
-            @Content(schema = @Schema(implementation = Car.class)) }) })
+            @Content(schema = @Schema(implementation = Warehouse.class)) }) })
     @GetMapping
-    public List<Car> findAll() {
+    public List<Warehouse> findAll() {
         return carService.findAll();
     }
 
     @Operation(summary = "Get an Car by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the Car", content = {
-                    @Content(schema = @Schema(implementation = Car.class)) }),
+                    @Content(schema = @Schema(implementation = Warehouse.class)) }),
             @ApiResponse(responseCode = "404", description = "Car not found", content = @Content) })
     @GetMapping(path = { "/{id}" }, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Car findById(@PathVariable(name = "id", required = true) Long id) {
+    public Warehouse findById(@PathVariable(name = "id", required = true) Long id) {
         return carService.findById(id);
     }
 
     @Operation(summary = "add a new car to the carpool, provide {deleted=false} ")
     @ApiResponse(responseCode = "200", description = "Car is added to the pool", content = {
-            @Content(schema = @Schema(implementation = Car.class)) })
+            @Content(schema = @Schema(implementation = Warehouse.class)) })
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody ResponseEntity<Car> create(@RequestBody Car body, HttpServletRequest request)
+    public @ResponseBody ResponseEntity<Warehouse> create(@RequestBody Warehouse body, HttpServletRequest request)
             throws Exception {
         return ResponseEntity.status(HttpStatus.CREATED).body(carService.create(body));
     }
@@ -63,17 +63,17 @@ public class CarController {
     @Operation(summary = "Update a car by id, provide {deleted=false}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Car was updated", content = {
-                    @Content(schema = @Schema(implementation = Car.class)) }),
+                    @Content(schema = @Schema(implementation = Warehouse.class)) }),
             @ApiResponse(responseCode = "404", description = "Car not found", content = @Content) })
     @PutMapping(path = "/updates/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody ResponseEntity<Car> update(@PathVariable(name = "id", required = true) Long id,
-            @RequestBody Car car, HttpServletRequest request) throws Exception {
+    public @ResponseBody ResponseEntity<Warehouse> update(@PathVariable(name = "id", required = true) Long id,
+            @RequestBody Warehouse car, HttpServletRequest request) throws Exception {
         return ResponseEntity.ok(carService.update(id, car));
     }
 
     @Operation(summary = "Get RGBColor by id")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "retrieved RGB Color", content = {
-            @Content(schema = @Schema(implementation = Car.class)) }) })
+            @Content(schema = @Schema(implementation = Warehouse.class)) }) })
     @GetMapping(path = "/color/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<Map<String, Object>> getRGBColor(
             @PathVariable(name = "id", required = true) Long id) {

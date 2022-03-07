@@ -1,4 +1,4 @@
-package org.carpool.car_mng;
+package org.progresssoft.warehouse;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.history.RevisionRepository;
@@ -7,5 +7,5 @@ import org.springframework.data.repository.history.RevisionRepository;
  *
  * @author Akbari300
  */
-public interface CarRepository extends JpaRepository<Car, Long>, RevisionRepository<Car, Long, Integer> {
+public interface WareRepository extends JpaRepository<Warehouse, Long>, RevisionRepository<Warehouse, Long, Integer> {
 }

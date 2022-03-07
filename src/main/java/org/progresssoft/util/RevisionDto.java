@@ -1,4 +1,4 @@
-package org.carpool.util;
+package org.progresssoft.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
