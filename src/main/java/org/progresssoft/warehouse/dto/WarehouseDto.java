@@ -2,7 +2,6 @@ package org.progresssoft.warehouse.dto;
 
 import java.math.BigDecimal;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,17 +24,14 @@ public class WarehouseDto {
     private String dealId;
 
     @JsonProperty(required = true)
-    @NotEmpty
     private BigDecimal amount;
 
     @JsonProperty(required = true)
-    @NotEmpty
-    @Size(max= 3, min=3, message = "currency code takes 3 letters")
+    @Size(max= 3, min=3, message = "orderCurrencyCode takes 3 letters")
     private String orderCurrencyCode;
 
     @JsonProperty(required = true)
-    @NotEmpty
-    @Size(max= 3, min=3, message = "currency code takes 3 letters")
+    @Size(max= 3, min=3, message = "exchangeCurrencyCode code takes 3 letters")
     private String exchangeCurrencyCode;
 
 }

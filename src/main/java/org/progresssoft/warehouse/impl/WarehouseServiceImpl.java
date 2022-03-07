@@ -1,5 +1,6 @@
 package org.progresssoft.warehouse.impl;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.progresssoft.util.RevisionDto;
 import org.progresssoft.warehouse.Warehouse;
 import org.progresssoft.warehouse.WareRepository;
@@ -43,15 +44,15 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     // create new deal
     @Override
-    public Object create(WarehouseDto dto) {
+    public Object create(WarehouseDto dto){
         try{
             Warehouse warehouse = WarehouseDtoMapper.mapWarehouseDto(new Warehouse(), dto);
              if (warehouse != null) {
                  return repository.save(warehouse);
             }
             return null;
-        }catch(Exception e){
-            return e.getMessage();
+        }catch(Exception  e){
+            return "duplicate (dealId) = " + dto.getDealId();
         }   
         
     }
@@ -59,7 +60,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     // create multiple deals
     @Override
-    public Boolean createAll(WarehouseDto [] dtos) {
+    public Object createAll(WarehouseDto [] dtos) {
         try{
             for (WarehouseDto dto : dtos) {
                 Warehouse warehouse = WarehouseDtoMapper.mapWarehouseDto(new Warehouse(), dto);
@@ -67,11 +68,10 @@ public class WarehouseServiceImpl implements WarehouseService {
                     repository.save(warehouse);
                  }
             }
-
             return true;
         }catch(Exception e){
             System.out.println(e.getMessage());
-            return false;
+            return "update dealID";
         }
         
     }

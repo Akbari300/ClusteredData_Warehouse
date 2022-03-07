@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,14 +17,20 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 /**
  *
@@ -52,12 +61,22 @@ public class WarehousController {
     }
 
     @Operation(summary = "add a new deal to the warehouse")
-    @ApiResponse(responseCode = "200", description = "Deal is added to the warehouse", content = {
+    @ApiResponse(responseCode = "201", description = "Deal is added to the warehouse", content = {
             @Content(schema = @Schema(implementation = WarehouseDto.class)) })
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody ResponseEntity<Object> create(@RequestBody WarehouseDto body, HttpServletRequest request)
+    public @ResponseBody ResponseEntity<Object> create(@Valid @RequestBody WarehouseDto body, HttpServletRequest request)
             throws Exception {
         return ResponseEntity.status(HttpStatus.CREATED).body(warehouseService.create(body));
+    }
+
+
+    @Operation(summary = "add a list of deal to the warehouse")
+    @ApiResponse(responseCode = "201", description = "Deals are added to the warehouse", content = {
+            @Content(schema = @Schema(implementation = WarehouseDto.class)) })
+    @PostMapping(path = "/addAll", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody ResponseEntity<Object> createAll(@Valid @RequestBody WarehouseDto [] body, HttpServletRequest request)
+            throws Exception {
+        return ResponseEntity.status(HttpStatus.CREATED).body(warehouseService.createAll(body));
     }
 
     @Operation(summary = "Update a deal by id")
@@ -66,7 +85,7 @@ public class WarehousController {
                     @Content(schema = @Schema(implementation = WarehouseDto.class)) }),
             @ApiResponse(responseCode = "404", description = "Deal not found", content = @Content) })
     @PutMapping(path = "/updates/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody ResponseEntity<Warehouse> update(@PathVariable(name = "id", required = true) Long id,
+    public @ResponseBody ResponseEntity<Warehouse> update(@Valid @PathVariable(name = "id", required = true) Long id,
             @RequestBody WarehouseDto car, HttpServletRequest request) throws Exception {
         return ResponseEntity.ok(warehouseService.update(id, car));
     }
@@ -85,5 +104,20 @@ public class WarehousController {
         return ResponseEntity.ok(warehouseService.getWareHouseAudits(id));
 
     }
+
+
+    // for validation error in WareHouseDto
+   @ResponseStatus(HttpStatus.BAD_REQUEST)
+   @ExceptionHandler(MethodArgumentNotValidException.class)
+   public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+                String fieldName = ((FieldError) error).getField();
+                String errorMessage = error.getDefaultMessage();
+                errors.put(fieldName, errorMessage);
+        });
+
+        return errors;
+  }
 
 }

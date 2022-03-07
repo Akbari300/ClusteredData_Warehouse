@@ -38,6 +38,7 @@ mvn spring-boot:run
 ```
 
 3. API Documentation. it's used OpenAPI Docs swagger-ui  [API Documentation](http://localhost:8090/warehouse.html). 
+http://localhost:8090/warehouse.html
 
 
 <!-- ## To run the service in multiple instances 
